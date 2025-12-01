@@ -79,6 +79,7 @@ clock = pygame.time.Clock()
 
 position = 50
 current_animation = None
+current_rotation_index = 0
 while True:
     clock.tick(FPS)
 
@@ -88,11 +89,16 @@ while True:
             exit()
 
     if current_animation is None:
-        rotation = rotations[0]
+        if current_rotation_index >= len(rotations):
+            break
+        rotation = rotations[current_rotation_index]
+        current_rotation_index += 1
         current_animation = animate_pointer(position, rotation)
 
     try:
         next(current_animation)
     except StopIteration:
-        break
+        position += rotation
+        position %= 100
+        current_animation = None
     pygame.display.flip()

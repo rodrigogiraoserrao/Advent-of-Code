@@ -18,10 +18,14 @@ def part1(start, splitters):
     beams = {start}
 
     split_count = 0
+    # splitters: list[set[int]] – one set per row of my input
     for splitter_positions in splitters:
+
         hits = beams & splitter_positions
         split_count += len(hits)
+
         misses = beams - hits
+
         # New beams are created by splitting the beams that were a hit.
         new_beams = {beam - 1 for beam in hits} | {beam + 1 for beam in hits}
         beams = misses | new_beams

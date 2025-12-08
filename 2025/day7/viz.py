@@ -67,12 +67,26 @@ for row_idx, row in enumerate(input_grid):
     
     beams = next_beams
 
-    total_beams_log = log(beams.total() + 1)
+    gamma = 0.4
+    row_max = max(beams.values(), default=0)
+    row_max_log = log(row_max + 1) if row_max > 0 else 1
     for beam_pos, beam_count in beams.items():
-        beam_per = log(beam_count + 1) / total_beams_log
-        red = 255
-        g = b = int(255 * (1 - beam_per))
-        draw_cell(beam_pos, row_idx, (red, g, b))
+        beam_per = (log(beam_count + 1) / row_max_log) ** gamma
+
+        if beam_per < 0.8:
+            # white → orange
+            t = beam_per / 0.8
+            r = 255
+            g = int(255 + t * (165 - 255))  # 255 → 165
+            b = int(255 + t * (0   - 255))  # 255 → 0
+        else:
+            # orange → red
+            t = (beam_per - 0.8) / 0.2
+            r = 255
+            g = int(165 + t * (0 - 165))    # 165 → 0
+            b = 0
+
+        draw_cell(beam_pos, row_idx, (r, g, b))
 
     pygame.display.update(
         pygame.rect.Rect(

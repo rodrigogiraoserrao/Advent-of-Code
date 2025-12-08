@@ -57,18 +57,14 @@ def part1(inp: str) -> str | int | None:
     distances.sort(reverse=True)
 
     for _ in range(max_connections):
-        print("-----" * 5 + "\n")
         _, pa, pb = distances.pop()
         if (new_id := id_to_circuit[pa]) == (old_id := id_to_circuit[pb]):
-            print(f"Skipping {points[pa]} and {points[pb]}.")
             continue
 
-        print(f"Connecting {points[pa]} and {points[pb]}.")
         for circuit_box in circuit_to_ids[old_id]:
             id_to_circuit[circuit_box] = new_id
         circuit_to_ids[new_id].update(circuit_to_ids[old_id])
         circuit_to_ids[old_id] = set()
-        print(circuit_to_ids[new_id])
 
     # Find the three largest circuits.
     return prod(islice(
@@ -96,13 +92,10 @@ def part2(inp: str) -> str | int | None:
     distances.sort(reverse=True)
 
     while circuits > 1:
-        print("-----" * 5 + "\n")
         _, pa, pb = distances.pop()
         if (new_id := id_to_circuit[pa]) == (old_id := id_to_circuit[pb]):
-            print(f"Skipping {points[pa]} and {points[pb]}.")
             continue
 
-        print(f"Connecting {points[pa]} and {points[pb]}.")
         circuits -= 1
         if circuits == 1:
             return points[pa][1][0] * points[pb][1][0]
@@ -111,5 +104,4 @@ def part2(inp: str) -> str | int | None:
             id_to_circuit[circuit_box] = new_id
         circuit_to_ids[new_id].update(circuit_to_ids[old_id])
         circuit_to_ids[old_id] = set()
-        print(circuit_to_ids[new_id])
 

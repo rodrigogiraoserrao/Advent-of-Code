@@ -1,5 +1,5 @@
 # /// script
-# requires-python = ">=3.14"
+# requires-python = ">=3.12"
 # dependencies = [
 #     "pygame",
 # ]
@@ -52,6 +52,7 @@ beams = Counter()
 beams[input_grid[0].index("S")] = 1
 
 # For each row:
+frame = 0
 for row_idx, row in enumerate(input_grid):
     splitter_positions = {idx for idx, cell in enumerate(row) if cell == "^"}
     next_beams = Counter()
@@ -96,6 +97,8 @@ for row_idx, row in enumerate(input_grid):
             CELL_SIZE,
         )
     )
+    pygame.image.save(screen, f"frames/frame{frame:03}.jpg")
+    frame += 1
 
 
 pygame.display.flip()

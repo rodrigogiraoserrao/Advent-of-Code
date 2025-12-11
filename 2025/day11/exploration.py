@@ -1,63 +1,18 @@
-"""🎄 Solution for Day 11 of Advent of Code 2025 🎄
-
-Usage:
-
-uv run adventofcode run 11.py
-"""
-
-inp = """\
-aaa: you hhh
-you: bbb ccc
-bbb: ddd eee
-ccc: ddd eee fff
-ddd: ggg
-eee: out
-fff: out
-ggg: out
-hhh: ccc fff iii
-iii: out
-"""
-
-inp2 = """\
-svr: aaa bbb
-aaa: fft
-fft: ccc
-bbb: tty
-tty: ccc
-ccc: ddd eee
-ddd: hub
-hub: fff
-eee: dac
-dac: fff
-fff: ggg hhh
-ggg: out
-hhh: out
-"""
-part1_asserts = [
-    (inp, 5),
-]
-part2_asserts = [
-    (inp2, 2),
-]
-
 from collections import defaultdict
+from functools import cache
 from itertools import pairwise
 import math
 
 
-def part1(inp: str) -> str | int | None:
-    connections = {}
-    for line in inp.splitlines():
-        from_, _, to_ = line.partition(": ")
-        connections[from_] = to_.split()
+def parse_input(filepath: str) -> dict[str, set[str]]:
+    """Build a dictionary mapping vertices to neighbours."""
+    connections: dict[str, set[str]] = {"out": set()}
+    with open(filepath, "r") as f:
+        for line in f:
+            from_, _, to_ = line.partition(": ")
+            connections[from_] = set(to_.split())
 
-    def traverse(from_, to_):
-        if from_ == to_:
-            return 1
-
-        return sum(traverse(neighb, to_) for neighb in connections[from_])
-
-    return traverse("you", "out")
+    return connections
 
 
 def build_sources_mapping(connections: dict[str, set[str]]) -> dict[str, set[str]]:
@@ -100,13 +55,11 @@ def count_paths(
     )
 
 
-def part2(inp: str) -> str | int | None:
-    connections = {}
-    for line in inp.splitlines():
-        from_, _, to_ = line.partition(": ")
-        connections[from_] = set(to_.split())
-    connections["out"] = set()
+if __name__ == "__main__":
+    connections = parse_input("input.txt")
     rev_connections = build_sources_mapping(connections)
+
+    print(f"There are a total of {len(connections)} vertices.")
 
     go_through: set[str] = {"fft", "dac"}
     reachable: dict[str, set[str]] = {
@@ -124,4 +77,5 @@ def part2(inp: str) -> str | int | None:
         admissible = compute_reachable(to_, rev_connections)
         segments.append(count_paths(from_, to_, connections, admissible))
 
-    return math.prod(segments)
+    print(segments)
+    print(math.prod(segments))

@@ -46,16 +46,16 @@ from functools import cache
 def part1(inp: str) -> str | int | None:
     connections = {}
     for line in inp.splitlines():
-        from_, _, to_ = line.partition(": ")
-        connections[from_] = to_.split()
+        start, _, targets = line.partition(": ")
+        connections[start] = targets.split()
 
-    def traverse(from_, to_):
-        if from_ == to_:
+    def count_paths(start, target):
+        if start == target:
             return 1
 
-        return sum(traverse(neighb, to_) for neighb in connections[from_])
+        return sum(count_paths(neighb, target) for neighb in connections[start])
 
-    return traverse("you", "out")
+    return count_paths("you", "out")
 
 
 def part2(inp: str) -> str | int | None:

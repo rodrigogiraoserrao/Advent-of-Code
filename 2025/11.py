@@ -124,4 +124,5 @@ def part2(inp: str) -> str | int | None:
         admissible = compute_reachable(to_, rev_connections)
         segments.append(count_paths(from_, to_, connections, admissible))
 
+    print(segments)
     return math.prod(segments)
